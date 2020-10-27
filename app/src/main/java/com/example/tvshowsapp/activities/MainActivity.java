@@ -6,20 +6,20 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.tvshowsapp.R;
 import com.example.tvshowsapp.adapters.TVShowAdapter;
 import com.example.tvshowsapp.databinding.ActivityMainBinding;
-import com.example.tvshowsapp.databinding.ActivityMainBindingImpl;
+import com.example.tvshowsapp.listeners.TVShowsListener;
 import com.example.tvshowsapp.models.TVShow;
 import com.example.tvshowsapp.viewmodels.MostPopularTVShowsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TVShowsListener {
 
     private ActivityMainBinding activityMainBinding;
     private MostPopularTVShowsViewModel viewModel;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private void doInitialization(){
         activityMainBinding.tvShowsRecyclerView.setHasFixedSize(true);
         viewModel = new ViewModelProvider(this).get(MostPopularTVShowsViewModel.class);
-        tvShowAdapter = new TVShowAdapter(tvShows);
+        tvShowAdapter = new TVShowAdapter(tvShows, this);
         activityMainBinding.tvShowsRecyclerView.setAdapter(tvShowAdapter);
         activityMainBinding.tvShowsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -89,4 +89,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onTVShowClicked(TVShow tvShow) {
+        Intent intent = new Intent(getApplicationContext(), TVShowDetailsActivity.class);
+        intent.putExtra("id", tvShow.getId());
+        intent.putExtra("name", tvShow.getName());
+        intent.putExtra("startDate", tvShow.getStartDate());
+        intent.putExtra("country", tvShow.getCountry());
+        intent.putExtra("network", tvShow.getNetwork());
+        intent.putExtra("status", tvShow.getStatus());
+        startActivity(intent);
+    }
 }
